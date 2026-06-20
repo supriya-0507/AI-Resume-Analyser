@@ -1,6 +1,8 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Form
 import shutil
 import pdfplumber
+
+app = FastAPI()
 
 SKILLS = [
     "Python",
@@ -19,32 +21,23 @@ SKILLS = [
     "Oracle",
     "Generative AI",
     "RAG",
-    "Cloud Computing"
+    "Cloud Computing",
+    "Docker",
+    "AWS"
 ]
-
-JOB_SKILLS = [
-    "Python",
-    "SQL",
-    "Power BI",
-    "Machine Learning",
-    "Data Analytics",
-    "Git",
-    "GitHub",
-    "Excel"
-]
-
-app = FastAPI()
-
 
 @app.get("/")
 def home():
-    return {"message": "My Resume Analyzer is Working!"}
+    return {"message": "AI Resume Analyzer is Working!"}
 
 
 @app.post("/upload")
-async def upload_resume(file: UploadFile = File(...)):
+async def upload_resume(
+    file: UploadFile = File(...),
+    job_description: str = Form(...)
+):
 
-    # Save uploaded file
+    # Save uploaded resume
     file_path = f"uploads/{file.filename}"
 
     with open(file_path, "wb") as buffer:
@@ -60,34 +53,57 @@ async def upload_resume(file: UploadFile = File(...)):
             if page_text:
                 text += page_text + "\n"
 
-    # Find skills in resume
+    # Skills found in resume
     found_skills = []
 
     for skill in SKILLS:
         if skill.lower() in text.lower():
             found_skills.append(skill)
 
-    # Match with job requirements
+    # Skills found in job description
+    job_skills = []
+
+    for skill in SKILLS:
+        if skill.lower() in job_description.lower():
+            job_skills.append(skill)
+
+    # Matching skills
     matched_skills = []
 
-    for skill in JOB_SKILLS:
-        if skill in found_skills:
+    for skill in found_skills:
+        if skill in job_skills:
             matched_skills.append(skill)
 
-    # Find missing skills
+    # Missing skills
     missing_skills = []
 
-    for skill in JOB_SKILLS:
-        if skill not in matched_skills:
+    for skill in job_skills:
+        if skill not in found_skills:
             missing_skills.append(skill)
 
     # ATS Score
-    ats_score = round((len(matched_skills) / len(JOB_SKILLS)) * 100, 2)
+    if len(job_skills) > 0:
+        ats_score = round(
+            (len(matched_skills) / len(job_skills)) * 100,
+            2
+        )
+    else:
+        ats_score = 0
+
+    # Recommendations
+    recommendations = []
+
+    for skill in missing_skills:
+        recommendations.append(
+            f"Consider adding {skill} to your resume"
+        )
 
     return {
         "filename": file.filename,
-        "skills_found": found_skills,
+        "resume_skills": found_skills,
+        "job_skills": job_skills,
         "matched_skills": matched_skills,
         "missing_skills": missing_skills,
-        "ats_score": ats_score
+        "ats_score": ats_score,
+        "recommendations": recommendations
     }
