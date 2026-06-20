@@ -28,7 +28,9 @@ SKILLS = [
 
 @app.get("/")
 def home():
-    return {"message": "AI Resume Analyzer is Working!"}
+    return {
+        "message": "AI Resume Analyzer is Working!"
+    }
 
 
 @app.post("/upload")
@@ -37,7 +39,7 @@ async def upload_resume(
     job_description: str = Form(...)
 ):
 
-    # Save uploaded resume
+    # Save uploaded file
     file_path = f"uploads/{file.filename}"
 
     with open(file_path, "wb") as buffer:
@@ -53,28 +55,28 @@ async def upload_resume(
             if page_text:
                 text += page_text + "\n"
 
-    # Skills found in resume
+    # Resume Skills
     found_skills = []
 
     for skill in SKILLS:
         if skill.lower() in text.lower():
             found_skills.append(skill)
 
-    # Skills found in job description
+    # Job Description Skills
     job_skills = []
 
     for skill in SKILLS:
         if skill.lower() in job_description.lower():
             job_skills.append(skill)
 
-    # Matching skills
+    # Matched Skills
     matched_skills = []
 
     for skill in found_skills:
         if skill in job_skills:
             matched_skills.append(skill)
 
-    # Missing skills
+    # Missing Skills
     missing_skills = []
 
     for skill in job_skills:
@@ -98,6 +100,26 @@ async def upload_resume(
             f"Consider adding {skill} to your resume"
         )
 
+    # Resume Strength Analysis
+    strengths = []
+    resume_score = 0
+
+    if "project" in text.lower():
+        strengths.append("Has Projects")
+        resume_score += 25
+
+    if "certification" in text.lower() or "certifications" in text.lower():
+        strengths.append("Has Certifications")
+        resume_score += 25
+
+    if "education" in text.lower():
+        strengths.append("Has Education Section")
+        resume_score += 25
+
+    if len(found_skills) >= 5:
+        strengths.append("Strong Technical Skills")
+        resume_score += 25
+
     return {
         "filename": file.filename,
         "resume_skills": found_skills,
@@ -105,5 +127,7 @@ async def upload_resume(
         "matched_skills": matched_skills,
         "missing_skills": missing_skills,
         "ats_score": ats_score,
+        "resume_score": resume_score,
+        "strengths": strengths,
         "recommendations": recommendations
     }
