@@ -1,8 +1,19 @@
 from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import pdfplumber
+import os
 
 app = FastAPI()
+
+# Enable CORS for frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 SKILLS = [
     "Python",
@@ -16,27 +27,24 @@ SKILLS = [
     "Excel",
     "Java",
     "C++",
-    "Pandas",
-    "NumPy",
-    "Oracle",
-    "Generative AI",
-    "RAG",
-    "Cloud Computing",
     "Docker",
-    "AWS"
+    "AWS",
+    "Oracle",
+    "RAG"
 ]
+
+os.makedirs("uploads", exist_ok=True)
+
 
 @app.get("/")
 def home():
-    return {
-        "message": "AI Resume Analyzer is Working!"
-    }
+    return {"message": "AI Resume Analyzer API Running"}
 
 
 @app.post("/upload")
 async def upload_resume(
     file: UploadFile = File(...),
-    job_description: str = Form(...)
+    job_description: str = Form("")
 ):
 
     # Save uploaded file
@@ -50,47 +58,69 @@ async def upload_resume(
 
     with pdfplumber.open(file_path) as pdf:
         for page in pdf.pages:
-            page_text = page.extract_text()
+            extracted = page.extract_text()
+            if extracted:
+                text += extracted + "\n"
 
-            if page_text:
-                text += page_text + "\n"
+    text_lower = text.lower()
 
-    # Resume Skills
-    found_skills = []
+    # Skills found in resume
+    found_skills = [
+        skill for skill in SKILLS
+        if skill.lower() in text_lower
+    ]
 
-    for skill in SKILLS:
-        if skill.lower() in text.lower():
-            found_skills.append(skill)
+    # Job skills from job description
+    if job_description.strip():
 
-    # Job Description Skills
-    job_skills = []
+        job_skills = [
+            skill for skill in SKILLS
+            if skill.lower() in job_description.lower()
+        ]
 
-    for skill in SKILLS:
-        if skill.lower() in job_description.lower():
-            job_skills.append(skill)
+    else:
+        job_skills = found_skills
 
-    # Matched Skills
-    matched_skills = []
+    # Matched skills
+    matched_skills = [
+        skill for skill in job_skills
+        if skill in found_skills
+    ]
 
-    for skill in found_skills:
-        if skill in job_skills:
-            matched_skills.append(skill)
-
-    # Missing Skills
-    missing_skills = []
-
-    for skill in job_skills:
-        if skill not in found_skills:
-            missing_skills.append(skill)
+    # Missing skills
+    missing_skills = [
+        skill for skill in job_skills
+        if skill not in found_skills
+    ]
 
     # ATS Score
+    ats_score = 0
+
     if len(job_skills) > 0:
         ats_score = round(
             (len(matched_skills) / len(job_skills)) * 100,
             2
         )
-    else:
-        ats_score = 0
+
+    # Resume Quality Score
+    resume_score = 0
+    strengths = []
+
+    if "project" in text_lower:
+        resume_score += 25
+        strengths.append("Has Projects")
+
+    if "certification" in text_lower or "certificate" in text_lower:
+        resume_score += 25
+        strengths.append("Has Certifications")
+
+    if "education" in text_lower:
+        resume_score += 25
+        strengths.append("Has Education Section")
+
+    if len(found_skills) >= 5:
+        resume_score += 25
+        strengths.append("Strong Technical Skills")
 
     # Recommendations
     recommendations = []
@@ -100,29 +130,9 @@ async def upload_resume(
             f"Consider adding {skill} to your resume"
         )
 
-    # Resume Strength Analysis
-    strengths = []
-    resume_score = 0
-
-    if "project" in text.lower():
-        strengths.append("Has Projects")
-        resume_score += 25
-
-    if "certification" in text.lower() or "certifications" in text.lower():
-        strengths.append("Has Certifications")
-        resume_score += 25
-
-    if "education" in text.lower():
-        strengths.append("Has Education Section")
-        resume_score += 25
-
-    if len(found_skills) >= 5:
-        strengths.append("Strong Technical Skills")
-        resume_score += 25
-
     return {
         "filename": file.filename,
-        "resume_skills": found_skills,
+        "skills_found": found_skills,
         "job_skills": job_skills,
         "matched_skills": matched_skills,
         "missing_skills": missing_skills,
