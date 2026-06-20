@@ -195,10 +195,10 @@ B.Tech Computer Science (Data Analytics)
 VIT-AP University
 
 GitHub:
-https://github.com/YOUR_GITHUB_USERNAME
+https://github.com/supriya-0507
 
 LinkedIn:
-https://www.linkedin.com/
+https://www.linkedin.com/in/suvvari-supriya-a74466334
 
 ---
 
