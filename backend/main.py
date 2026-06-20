@@ -25,12 +25,12 @@ SKILLS = [
 JOB_SKILLS = [
     "Python",
     "SQL",
-    "Oracle",
-    "Git",
-    "GitHub",
+    "Power BI",
     "Machine Learning",
     "Data Analytics",
-    "Power BI"
+    "Git",
+    "GitHub",
+    "Excel"
 ]
 
 app = FastAPI()
@@ -38,9 +38,7 @@ app = FastAPI()
 
 @app.get("/")
 def home():
-    return {
-        "message": "My Resume Analyzer is Working!"
-    }
+    return {"message": "My Resume Analyzer is Working!"}
 
 
 @app.post("/upload")
@@ -69,23 +67,27 @@ async def upload_resume(file: UploadFile = File(...)):
         if skill.lower() in text.lower():
             found_skills.append(skill)
 
-    # Match with job skills
+    # Match with job requirements
     matched_skills = []
 
-    for skill in found_skills:
-        if skill in JOB_SKILLS:
+    for skill in JOB_SKILLS:
+        if skill in found_skills:
             matched_skills.append(skill)
 
-    # Calculate ATS Score
-    ats_score = round(
-        (len(matched_skills) / len(JOB_SKILLS)) * 100,
-        2
-    )
+    # Find missing skills
+    missing_skills = []
 
-    # Return results
+    for skill in JOB_SKILLS:
+        if skill not in matched_skills:
+            missing_skills.append(skill)
+
+    # ATS Score
+    ats_score = round((len(matched_skills) / len(JOB_SKILLS)) * 100, 2)
+
     return {
         "filename": file.filename,
         "skills_found": found_skills,
         "matched_skills": matched_skills,
+        "missing_skills": missing_skills,
         "ats_score": ats_score
     }
