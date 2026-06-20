@@ -1,14 +1,14 @@
 # AI Resume Analyzer
 
-An AI-powered Resume Analyzer that evaluates resumes against job descriptions, calculates ATS scores, identifies missing skills, and provides personalized recommendations through an interactive dashboard.
+An AI-powered Resume Analyzer that evaluates resumes against job descriptions, calculates ATS scores, identifies skill gaps, and provides personalized recommendations through an interactive dashboard.
 
 ---
 
 ## Features
 
-✅ Upload Resume PDF
+✅ Resume PDF Upload
 
-✅ Extract Resume Text Automatically
+✅ Automatic Resume Text Extraction
 
 ✅ ATS Score Calculation
 
@@ -20,11 +20,11 @@ An AI-powered Resume Analyzer that evaluates resumes against job descriptions, c
 
 ✅ Personalized Recommendations
 
-✅ Interactive Dashboard
+✅ Interactive Streamlit Dashboard
 
-✅ Visual Analytics with Charts
+✅ Visual Analytics using Plotly
 
-✅ Download Analysis Report
+✅ Downloadable Analysis Report
 
 ---
 
@@ -42,9 +42,10 @@ An AI-powered Resume Analyzer that evaluates resumes against job descriptions, c
 - Pandas
 - Plotly
 
-### Tools
+### Tools & Technologies
 - Git
 - GitHub
+- VS Code
 
 ---
 
@@ -61,30 +62,50 @@ Job Description Matching
     ↓
 ATS Score Calculation
     ↓
-Recommendations Engine
+Skill Gap Analysis
+    ↓
+Recommendation Engine
     ↓
 Interactive Dashboard
 ```
 
 ---
 
-## Screenshots
+## Features Demonstrated
 
-### Dashboard
+### Resume Analysis
+- Extracts text from uploaded PDF resumes
+- Detects technical skills from resume content
+- Matches skills against job descriptions
 
-Add your project screenshots here after uploading them to GitHub.
+### ATS Evaluation
+- Calculates ATS compatibility score
+- Identifies matched skills
+- Highlights missing skills
+
+### Resume Quality Assessment
+- Evaluates resume strengths
+- Calculates resume quality score
+- Generates actionable recommendations
+
+### Dashboard Analytics
+- ATS score visualization
+- Skill match analysis chart
+- Resume overview metrics
+- Downloadable analysis report
 
 ---
+
 
 ## Installation
 
 Clone the repository:
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/AI-Resume-Analyzer.git
+git clone https://github.com/supriya-0507/AI-Resume-Analyzer.git
 ```
 
-Move into the project folder:
+Navigate to the project folder:
 
 ```bash
 cd AI-Resume-Analyzer
@@ -126,12 +147,18 @@ http://localhost:8501
 
 ---
 
-## Example Output
+## Sample Output
 
 ### ATS Score
 
 ```text
 28.57%
+```
+
+### Resume Score
+
+```text
+100
 ```
 
 ### Matched Skills
@@ -151,38 +178,36 @@ Docker
 AWS
 ```
 
-### Resume Score
+---
 
-```text
-100
-```
+## Learning Outcomes
+
+Through this project, I gained practical experience in:
+
+- FastAPI API Development
+- PDF Processing and Parsing
+- Resume Analysis Systems
+- ATS Scoring Logic
+- Skill Gap Detection
+- Streamlit Dashboard Development
+- Data Visualization with Plotly
+- Git Version Control
+- GitHub Project Management
 
 ---
 
 ## Future Improvements
 
-- AI Resume Summarization
-- GPT-Based Resume Feedback
+- AI-Powered Resume Feedback using LLMs
+- Gemini/OpenAI Integration
+- Resume Summarization
 - Industry-Specific ATS Analysis
 - Resume Ranking System
 - Multi-Resume Comparison
 - Skill Learning Roadmap Generator
-- Cloud Deployment
-
----
-
-## Learning Outcomes
-
-Through this project I learned:
-
-- FastAPI API Development
-- PDF Processing
-- Resume Parsing
-- ATS Evaluation Logic
-- Streamlit Dashboard Development
-- Data Visualization
-- Git Version Control
-- GitHub Project Management
+- Cloud Deployment using AWS or Oracle Cloud
+- User Authentication
+- Resume History Tracking
 
 ---
 
@@ -190,18 +215,34 @@ Through this project I learned:
 
 ### Suvvari Supriya
 
-B.Tech Computer Science (Data Analytics)
+B.Tech Computer Science and Engineering (Data Analytics)
 
 VIT-AP University
 
-GitHub:
+### GitHub
+
 https://github.com/supriya-0507
 
-LinkedIn:
+### LinkedIn
+
+https://www.linkedin.com/in/suvvari-supriya-a74466334
+
+---
+
+## Connect With Me
+
+I am passionate about Data Analytics, Artificial Intelligence, Machine Learning, Software Development, and building impactful technology solutions.
+
+Feel free to connect with me for collaboration, internships, project discussions, and learning opportunities.
+
+### GitHub
+https://github.com/supriya-0507
+
+### LinkedIn
 https://www.linkedin.com/in/suvvari-supriya-a74466334
 
 ---
 
 ## License
 
-This project is developed for educational and portfolio purposes.
+This project is developed for educational, learning, and portfolio purposes.
